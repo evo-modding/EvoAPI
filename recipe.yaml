@@ -12,19 +12,20 @@ tasks:
     subpath: resources
     dest: ./resources
 
-  # Download EvoAPI
   - action: download_github
     src: https://github.com/evo-modding/EvoAPI
     ref: main
     dest: ./resources/[evo]/EvoAPI
 
-  - action: download_file
-    url: https://github.com/overextended/oxmysql/releases/latest/download/oxmysql.zip
-    path: ./resources/[standalone]/oxmysql.zip
+  - action: download_github
+    src: https://github.com/evo-modding/oxmysql
+    ref: main
+    dest: ./resources/[standalone]/oxmysql
 
-  - action: download_file
-    url: https://github.com/TomGrobbe/vMenu/releases/latest/download/vMenu.zip
-    path: ./resources/[admin]/vMenu.zip
+  - action: download_github
+    src: https://github.com/evo-modding/vmenu
+    ref: main
+    dest: ./resources/[standalone]/vmenu
 
   # Download EvoAPI default server.cfg template
   - action: download_file
