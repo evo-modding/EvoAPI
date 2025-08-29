@@ -1,9 +1,17 @@
+local MySQL = exports.oxmysql
 
+-- Execute any SQL statement
 local function Exec(sql, params, cb)
-    if cb then MySQL.query(sql, params or {}, function(res) cb(res) end)
-    else MySQL.query(sql, params or {}) end
+    if cb then
+        MySQL:query(sql, params or {}, function(res)
+            cb(res)
+        end)
+    else
+        MySQL:query(sql, params or {})
+    end
 end
 
+-- Initialize database on resource start
 CreateThread(function()
     local sql = [[
         CREATE TABLE IF NOT EXISTS evoapi_players (
@@ -21,32 +29,37 @@ CreateThread(function()
     EvoAPI.Log("Database initialized (evoapi_players).")
 end)
 
+-- Ensure player exists in DB
 function EvoAPI.DBEnsurePlayer(identifier, name)
-    MySQL.scalar("SELECT id FROM evoapi_players WHERE identifier = ? LIMIT 1", {identifier}, function(id)
+    MySQL:scalar("SELECT id FROM evoapi_players WHERE identifier = ? LIMIT 1", {identifier}, function(id)
         if not id then
-            MySQL.insert("INSERT INTO evoapi_players (identifier, name) VALUES (?, ?)", {identifier, name or "Unknown"})
+            MySQL:insert("INSERT INTO evoapi_players (identifier, name) VALUES (?, ?)", {identifier, name or "Unknown"})
         else
-            MySQL.update("UPDATE evoapi_players SET name = ? WHERE id = ?", {name or "Unknown", id})
+            MySQL:update("UPDATE evoapi_players SET name = ? WHERE id = ?", {name or "Unknown", id})
         end
     end)
 end
 
+-- Update last join time
 function EvoAPI.DBUpdateLastJoin(identifier)
-    MySQL.update("UPDATE evoapi_players SET last_join = CURRENT_TIMESTAMP WHERE identifier = ?", {identifier})
+    MySQL:update("UPDATE evoapi_players SET last_join = CURRENT_TIMESTAMP WHERE identifier = ?", {identifier})
 end
 
+-- Add playtime minutes
 function EvoAPI.DBAddPlaytime(identifier, minutes)
     minutes = tonumber(minutes or 0) or 0
     if minutes <= 0 then return end
-    MySQL.update("UPDATE evoapi_players SET playtime = playtime + ? WHERE identifier = ?", {minutes, identifier})
+    MySQL:update("UPDATE evoapi_players SET playtime = playtime + ? WHERE identifier = ?", {minutes, identifier})
 end
 
+-- Get player info by identifier
 function EvoAPI.DBGetPlayerByIdentifier(identifier, cb)
-    MySQL.query("SELECT * FROM evoapi_players WHERE identifier = ? LIMIT 1", {identifier}, function(result)
+    MySQL:query("SELECT * FROM evoapi_players WHERE identifier = ? LIMIT 1", {identifier}, function(result)
         cb(result and result[1])
     end)
 end
 
+-- Update player group
 function EvoAPI.DBSetGroup(identifier, group)
-    MySQL.update("UPDATE evoapi_players SET `group` = ? WHERE identifier = ?", {group, identifier})
+    MySQL:update("UPDATE evoapi_players SET `group` = ? WHERE identifier = ?", {group, identifier})
 end
