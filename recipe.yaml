@@ -23,7 +23,7 @@ tasks:
     dest: ./resources/[standalone]/oxmysql
 
   - action: download_github
-    src: https://github.com/evo-modding/vmenu
+    src: https://github.com/evo-modding/vMenu
     ref: main
     dest: ./resources/[standalone]/vMenu
 
