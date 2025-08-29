@@ -2,9 +2,16 @@ $engine: 3
 $onesync: on
 name: EvoAPI Server Setup
 author: EVO Modding
-description: Recipe to install EvoAPI, oxmysql, vMenu, and set up server.cfg automatically.
+description: One-click installer for EvoAPI, vMenu, oxmysql, and FiveM default resources.
 
 tasks:
+  # Download default FiveM base resources
+  - action: download_github
+    src: https://github.com/citizenfx/cfx-server-data
+    ref: master
+    subpath: resources
+    dest: ./resources
+
   # Download EvoAPI
   - action: download_github
     src: https://github.com/evo-modding/EvoAPI
@@ -23,7 +30,7 @@ tasks:
     ref: master
     dest: ./resources/[admin]/vMenu
 
-  # Download default EvoAPI server.cfg template
+  # Download EvoAPI default server.cfg template
   - action: download_file
     url: https://raw.githubusercontent.com/evo-modding/EvoAPI/main/server.cfg
     path: ./server.cfg
