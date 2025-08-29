@@ -6,33 +6,25 @@ description: |
   Configures database, permissions, and server.cfg automatically.
 
 tasks:
-  - action: download
+  # Download EvoAPI
+  - type: download
     src: https://github.com/evo-modding/EvoAPI/archive/refs/heads/main.zip
-    dest: ./tmp/EvoAPI.zip
-
-  - action: unzip
-    src: ./tmp/EvoAPI.zip
     dest: resources/[evo]/EvoAPI
 
-  - action: download
+  # Download oxmysql
+  - type: download
     src: https://github.com/overextended/oxmysql/releases/latest/download/oxmysql.zip
-    dest: ./tmp/oxmysql.zip
-
-  - action: unzip
-    src: ./tmp/oxmysql.zip
     dest: resources/[standalone]/oxmysql
 
-  - action: download
+  # Download vMenu
+  - type: download
     src: https://github.com/TomGrobbe/vMenu/releases/latest/download/vMenu.zip
-    dest: ./tmp/vmenu.zip
-
-  - action: unzip
-    src: ./tmp/vmenu.zip
     dest: resources/[admin]/vMenu
 
-  - action: write_file
+  # Generate server.cfg
+  - type: writeFile
     path: server.cfg
-    content: |
+    data: |
       # ===== EVO RP | Powered by EvoAPI =====
       sv_hostname "EVO RP | Powered by EvoAPI"
       sets sv_projectName "EVO RP"
