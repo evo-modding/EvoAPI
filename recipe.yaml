@@ -18,17 +18,13 @@ tasks:
     ref: main
     dest: ./resources/[evo]/EvoAPI
 
-  # Download oxmysql
-  - action: download_github
-    src: https://github.com/overextended/oxmysql
-    ref: main
-    dest: ./resources/[standalone]/oxmysql
+  - action: download_file
+    url: https://github.com/overextended/oxmysql/releases/latest/download/oxmysql.zip
+    path: ./resources/[standalone]/oxmysql.zip
 
-  # Download vMenu
-  - action: download_github
-    src: https://github.com/TomGrobbe/vMenu
-    ref: master
-    dest: ./resources/[admin]/vMenu
+  - action: download_file
+    url: https://github.com/TomGrobbe/vMenu/releases/latest/download/vMenu.zip
+    path: ./resources/[admin]/vMenu.zip
 
   # Download EvoAPI default server.cfg template
   - action: download_file
