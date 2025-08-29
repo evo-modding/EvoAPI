@@ -1,6 +1,4 @@
 
--- EvoAPI Commands
-
 EvoAPI.RegisterCommand("evoapi_players", "admin", function(src)
     local list = {}
     for _, id in ipairs(GetPlayers()) do
@@ -64,7 +62,6 @@ EvoAPI.RegisterCommand("evoapi_reload", "owner", function(src)
     end
     TriggerClientEvent("EvoAPI:Notify", src, { msg = "Config reloaded.", type = "success" })
     EvoAPI.DiscordLog("Config Reloaded", ("By %s"):format(GetPlayerName(src) or src), 0x5865F2)
-    -- Reapply vMenu permissions after reload
     TriggerEvent("EvoAPI:ApplyVMenuPerms")
 end, "Reload EvoAPI config without restart.")
 

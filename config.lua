@@ -23,39 +23,31 @@ Config.Groups = {
     ["owner"] = {
         "discord:1407547116045209612" -- you
     },
-    ["admin"] = {
-        -- "license:xxxxxxxxxxxxxxxxx"
-    },
-    ["mod"] = {
-        -- "discord:123456789012345678"
-    },
+    ["admin"] = { },
+    ["mod"] = { },
     ["user"] = { }
 }
 
--- vMenu integration settings
+-- vMenu integration
 Config.VMenu = {
     ToggleKey = "F1",
     UsePermissions = true,
     BanDefaults = false,
-
-    -- vMenu ACE nodes per group.
-    -- IMPORTANT: vMenu supports many granular permissions. By default we give:
-    --   - owner: vMenu.Everything
-    --   - admin/mod: (none; add what you need below)
-    -- You can add nodes like "vMenu.NoClip", "vMenu.VehicleSpawner.Menu", etc.
     PermissionMap = {
         owner = { "vMenu.Everything" },
-        admin = {
-            -- "vMenu.NoClip",
-            -- "vMenu.Teleport.Menu",
-        },
-        mod = {
-            -- "vMenu.VehicleOptions.Menu",
-        },
+        admin = { },
+        mod = { },
         user = { }
     }
 }
 
+-- Web Panel (beta)
+Config.WebPanel = {
+    Enabled = true,
+    Token = "CHANGE_ME_TO_A_RANDOM_SECRET", -- REQUIRED: set a long random token
+    BasePath = "/evoapi" -- panel at http://<ip>:30120/evoapi/panel
+}
+
 -- Database / Webhook
 Config.UseDatabase = true -- requires oxmysql
-Config.DiscordWebhook = "" -- optional: add your Discord webhook URL
+Config.DiscordWebhook = "" -- optional: Discord logging

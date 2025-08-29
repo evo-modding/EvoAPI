@@ -1,15 +1,9 @@
 
--- EvoAPI Database (oxmysql required)
-
 local function Exec(sql, params, cb)
-    if cb then
-        MySQL.query(sql, params or {}, function(res) cb(res) end)
-    else
-        MySQL.query(sql, params or {})
-    end
+    if cb then MySQL.query(sql, params or {}, function(res) cb(res) end)
+    else MySQL.query(sql, params or {}) end
 end
 
--- Create table on start
 CreateThread(function()
     local sql = [[
         CREATE TABLE IF NOT EXISTS evoapi_players (
@@ -27,7 +21,6 @@ CreateThread(function()
     EvoAPI.Log("Database initialized (evoapi_players).")
 end)
 
--- Ensure player row exists
 function EvoAPI.DBEnsurePlayer(identifier, name)
     MySQL.scalar("SELECT id FROM evoapi_players WHERE identifier = ? LIMIT 1", {identifier}, function(id)
         if not id then
@@ -50,7 +43,7 @@ end
 
 function EvoAPI.DBGetPlayerByIdentifier(identifier, cb)
     MySQL.query("SELECT * FROM evoapi_players WHERE identifier = ? LIMIT 1", {identifier}, function(result)
-        cb(result and result[0+1])
+        cb(result and result[1])
     end)
 end
 

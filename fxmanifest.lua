@@ -4,8 +4,8 @@ game 'gta5'
 lua54 'yes'
 
 author 'EVO Modding'
-description 'EvoAPI — FiveM Modding Framework (v1.2.1) with vMenu integration'
-version '1.2.1'
+description 'EvoAPI — FiveM Modding Framework (v1.3.0) with Web Panel (beta)'
+version '1.3.0'
 
 ui_page 'nui/index.html'
 
@@ -13,7 +13,9 @@ files {
     'nui/index.html',
     'nui/style.css',
     'nui/script.js',
-    'permissions.vmenu.cfg'
+    'web/panel.html',
+    'web/panel.css',
+    'web/panel.js'
 }
 
 client_scripts {
@@ -33,6 +35,7 @@ server_scripts {
     'server/commands.lua',
     'server/discord.lua',
     'server/vmenu_integration.lua',
+    'server/web.lua',
     'server/exports.lua',
     'modules/server/*.lua'
 }

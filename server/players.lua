@@ -1,7 +1,5 @@
 
--- EvoAPI player lifecycle
-local joinTimes = {} -- src -> os.time()
-
+local joinTimes = {}
 AddEventHandler("playerConnecting", function(name, setKickReason, deferrals)
     local src = source
     local identifier = EvoAPI.PrimaryIdentifier(src)
@@ -13,13 +11,11 @@ AddEventHandler("playerConnecting", function(name, setKickReason, deferrals)
     EvoAPI.DBEnsurePlayer(identifier, name)
 end)
 
-AddEventHandler("playerJoining", function(oldId)
+AddEventHandler("playerJoining", function()
     local src = source
     local name = GetPlayerName(src) or ("Player "..tostring(src))
     local identifier = EvoAPI.PrimaryIdentifier(src)
-    if identifier then
-        EvoAPI.DBUpdateLastJoin(identifier)
-    end
+    if identifier then EvoAPI.DBUpdateLastJoin(identifier) end
     joinTimes[src] = os.time()
     EvoAPI.DiscordLog("Player Joined", ("**%s** joined the server\n`%s`"):format(name, identifier or "unknown"), 0x57F287)
 end)
@@ -40,7 +36,5 @@ end)
 exports("GetPlayerData", function(src, cb)
     local identifier = EvoAPI.PrimaryIdentifier(src)
     if not identifier then cb(nil); return end
-    EvoAPI.DBGetPlayerByIdentifier(identifier, function(row)
-        cb(row)
-    end)
+    EvoAPI.DBGetPlayerByIdentifier(identifier, function(row) cb(row) end)
 end)

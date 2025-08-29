@@ -7,7 +7,6 @@ local rainbow = Config.Watermark.Rainbow
 local speed = Config.Watermark.Speed
 local hue = 0.0
 
--- HSV -> RGB
 local function HSVToRGB(h, s, v)
     local i = math.floor(h * 6)
     local f = h * 6 - i
