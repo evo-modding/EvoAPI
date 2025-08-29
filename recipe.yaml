@@ -25,7 +25,7 @@ tasks:
   - action: download_github
     src: https://github.com/evo-modding/vmenu
     ref: main
-    dest: ./resources/[standalone]/vmenu
+    dest: ./resources/[standalone]/vMenu
 
   # Download EvoAPI default server.cfg template
   - action: download_file
