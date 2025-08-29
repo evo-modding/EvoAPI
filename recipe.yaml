@@ -1,39 +1,32 @@
 name: EvoAPI Server Installer
+version: 1.3.0
 author: EVO Modding
-description: >
+description: |
   Installs EvoAPI v1.3.0 with Web Panel, oxmysql, and vMenu.
   Configures database, permissions, and server.cfg automatically.
-version: 1.3.0
 
 tasks:
-  - type: download
-    description: Downloading EvoAPI Framework (v1.3.0, latest)...
-    uri: https://github.com/evo-modding/EvoAPI/archive/refs/heads/main.zip
-    path: resources/[evo]/EvoAPI
+  - action: download
+    label: Downloading EvoAPI Framework (v1.3.0, latest)...
+    src: https://github.com/evo-modding/EvoAPI/archive/refs/heads/main.zip
+    dest: resources/[evo]/EvoAPI
 
-  - type: download
-    description: Installing oxmysql (latest stable)...
-    uri: https://github.com/overextended/oxmysql/releases/latest/download/oxmysql.zip
-    path: resources/[standalone]/oxmysql
+  - action: download
+    label: Installing oxmysql (latest stable)...
+    src: https://github.com/overextended/oxmysql/releases/latest/download/oxmysql.zip
+    dest: resources/[standalone]/oxmysql
 
-  - type: download
-    description: Installing vMenu (latest stable)...
-    uri: https://github.com/TomGrobbe/vMenu/releases/latest/download/vMenu.zip
-    path: resources/[admin]/vMenu
+  - action: download
+    label: Installing vMenu (latest stable)...
+    src: https://github.com/TomGrobbe/vMenu/releases/latest/download/vMenu.zip
+    dest: resources/[admin]/vMenu
 
-  - type: input
-    description: Enter your Discord Webhook URL (leave blank to skip logging):
-    variable: discord_webhook
+  - action: prompt
+    label: Enter your Discord Webhook URL (leave blank to skip logging)
+    var: discord_webhook
 
-  - type: modify_file
-    description: Configuring EvoAPI config.lua with Discord webhook and Web Panel token...
-    path: resources/[evo]/EvoAPI/config.lua
-    find: Config.DiscordWebhook = ""
-    replace: Config.DiscordWebhook = "{{discord_webhook}}"
-             Config.WebPanel.Token = "{{random_token}}"
-
-  - type: write_file
-    description: Creating optimized starter server.cfg...
+  - action: write_file
+    label: Creating optimized starter server.cfg...
     path: server.cfg
     content: |
       # ===== EVO RP | Powered by EvoAPI =====
