@@ -1,5 +1,5 @@
 
--- EvoAPI Rainbow Watermark (HUD) - client (DrawText-based)
+-- EvoAPI Rainbow Watermark (HUD) - client
 local enabled = Config.Watermark.Enabled
 local text = Config.Watermark.Text
 local x, y, scale = Config.Watermark.X, Config.Watermark.Y, Config.Watermark.Scale
@@ -7,6 +7,7 @@ local rainbow = Config.Watermark.Rainbow
 local speed = Config.Watermark.Speed
 local hue = 0.0
 
+-- HSV -> RGB
 local function HSVToRGB(h, s, v)
     local i = math.floor(h * 6)
     local f = h * 6 - i
@@ -47,6 +48,11 @@ end
 RegisterNetEvent("EvoAPI:Watermark:Set", function(newText)
     text = tostring(newText or text or "Evo RP")
 end)
+
+RegisterCommand("evoapi_wm", function(_, args)
+    local msg = table.concat(args or {}, " ")
+    if msg ~= "" then text = msg end
+end, false)
 
 CreateThread(function()
     while true do

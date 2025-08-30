@@ -8,6 +8,7 @@ function EvoAPI.Log(msg)
     print(("^4[EvoAPI]^0 %s"):format(tostring(msg)))
 end
 
+-- Identifiers helper
 function EvoAPI.GetIds(src)
     local ids = {license=nil, steam=nil, discord=nil, ip=nil}
     for _, id in ipairs(GetPlayerIdentifiers(src)) do
@@ -24,6 +25,7 @@ function EvoAPI.PrimaryIdentifier(src)
     return ids.license or ids.steam or ids.discord or ids.ip
 end
 
+-- Permissions: groups
 function EvoAPI.GetGroup(src)
     local ids = GetPlayerIdentifiers(src)
     for group, list in pairs(Config.Groups or {}) do
@@ -44,9 +46,11 @@ function EvoAPI.HasGroup(src, group)
     return (order[have] or 0) >= (order[group] or 0)
 end
 
--- Events with optional permission guard
+-- Register a server event with optional permission requirement
 function EvoAPI.RegisterEvent(event, callback, requiredGroup)
-    if EvoAPI.Events[event] then return end
+    if EvoAPI.Events[event] then
+        EvoAPI.Log(("Event already registered: %s"):format(event)); return
+    end
     EvoAPI.Events[event] = true
     RegisterNetEvent(event)
     AddEventHandler(event, function(data)
@@ -60,7 +64,7 @@ function EvoAPI.RegisterEvent(event, callback, requiredGroup)
     EvoAPI.Log(("Registered event: ^3%s^0 (perm: %s)"):format(event, tostring(requiredGroup or "none")))
 end
 
--- Commands with permission guard
+-- Register a command with permission
 function EvoAPI.RegisterCommand(name, requiredGroup, handler, suggestion)
     if EvoAPI.Commands[name] then return end
     RegisterCommand(name, function(src, args, raw)
@@ -77,15 +81,23 @@ function EvoAPI.RegisterCommand(name, requiredGroup, handler, suggestion)
     EvoAPI.Log(("Registered command: /%s (perm: %s)"):format(name, tostring(requiredGroup or "none")))
 end
 
--- Client triggers
-function EvoAPI.TriggerClient(event, target, payload) TriggerClientEvent(event, target, payload) end
-function EvoAPI.Broadcast(event, payload) for _, id in ipairs(GetPlayers()) do TriggerClientEvent(event, id, payload) end end
+-- Trigger client & broadcast
+function EvoAPI.TriggerClient(event, target, payload)
+    TriggerClientEvent(event, target, payload)
+end
 
--- Client to server gateway
+function EvoAPI.Broadcast(event, payload)
+    for _, id in ipairs(GetPlayers()) do
+        TriggerClientEvent(event, id, payload)
+    end
+end
+
+-- Allow clients to trigger named EvoAPI server events
 RegisterNetEvent("EvoAPI:TriggerServer")
 AddEventHandler("EvoAPI:TriggerServer", function(event, data)
+    local src = source
     if EvoAPI.Events[event] then
-        TriggerEvent(event, data)
+        TriggerEvent(event, data) -- handlers already permission-gated
     else
         EvoAPI.Log(("Unknown event: %s"):format(event))
     end

@@ -1,5 +1,5 @@
 
--- EvoAPI Database (oxmysql)
+-- EvoAPI Database (oxmysql required)
 
 local function Exec(sql, params, cb)
     if cb then
@@ -9,8 +9,9 @@ local function Exec(sql, params, cb)
     end
 end
 
+-- Create table on start
 CreateThread(function()
-    Exec([[
+    local sql = [[
         CREATE TABLE IF NOT EXISTS evoapi_players (
             id INT AUTO_INCREMENT PRIMARY KEY,
             identifier VARCHAR(64) NOT NULL,
@@ -21,42 +22,12 @@ CreateThread(function()
             `group` VARCHAR(32) DEFAULT 'user',
             UNIQUE KEY uniq_identifier (identifier)
         );
-    ]])
-    Exec([[
-        CREATE TABLE IF NOT EXISTS evoapi_bans (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            identifier VARCHAR(64) NOT NULL UNIQUE,
-            name VARCHAR(64),
-            reason VARCHAR(255),
-            banned_by VARCHAR(64),
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-        );
-    ]])
-    Exec([[
-        CREATE TABLE IF NOT EXISTS evoapi_notes (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            identifier VARCHAR(64),
-            note TEXT,
-            added_by VARCHAR(64),
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-        );
-    ]])
-    Exec([[
-        CREATE TABLE IF NOT EXISTS evoapi_logs (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            action VARCHAR(64),
-            actor_identifier VARCHAR(64),
-            actor_name VARCHAR(64),
-            target_identifier VARCHAR(64),
-            target_name VARCHAR(64),
-            details TEXT,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-        );
-    ]])
-    print("^4[EvoAPI]^0 Database initialized (players/bans/notes/logs).")
+    ]]
+    Exec(sql)
+    EvoAPI.Log("Database initialized (evoapi_players).")
 end)
 
--- Players
+-- Ensure player row exists
 function EvoAPI.DBEnsurePlayer(identifier, name)
     MySQL.scalar("SELECT id FROM evoapi_players WHERE identifier = ? LIMIT 1", {identifier}, function(id)
         if not id then
@@ -85,36 +56,4 @@ end
 
 function EvoAPI.DBSetGroup(identifier, group)
     MySQL.update("UPDATE evoapi_players SET `group` = ? WHERE identifier = ?", {group, identifier})
-end
-
--- Bans
-function EvoAPI.DBBan(identifier, name, reason, banned_by)
-    MySQL.insert("INSERT INTO evoapi_bans (identifier, name, reason, banned_by) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE reason = VALUES(reason), banned_by = VALUES(banned_by), timestamp = CURRENT_TIMESTAMP", {identifier, name, reason, banned_by})
-end
-
-function EvoAPI.DBIsBanned(identifier, cb)
-    MySQL.query("SELECT * FROM evoapi_bans WHERE identifier = ? LIMIT 1", {identifier}, function(res)
-        cb(res and res[0+1])
-    end)
-end
-
-function EvoAPI.DBUnban(identifier)
-    MySQL.update("DELETE FROM evoapi_bans WHERE identifier = ?", {identifier})
-end
-
--- Notes
-function EvoAPI.DBAddNote(identifier, note, added_by)
-    MySQL.insert("INSERT INTO evoapi_notes (identifier, note, added_by) VALUES (?, ?, ?)", {identifier, note, added_by})
-end
-
-function EvoAPI.DBGetNotes(identifier, cb)
-    MySQL.query("SELECT * FROM evoapi_notes WHERE identifier = ? ORDER BY id DESC LIMIT 20", {identifier}, function(res)
-        cb(res or {})
-    end)
-end
-
--- Logs
-function EvoAPI.DBLog(action, actor_id, actor_name, target_id, target_name, details)
-    MySQL.insert("INSERT INTO evoapi_logs (action, actor_identifier, actor_name, target_identifier, target_name, details) VALUES (?, ?, ?, ?, ?, ?)",
-        {action, actor_id or "", actor_name or "", target_id or "", target_name or "", details or ""})
 end

@@ -1,3 +1,3 @@
 
--- EvoAPI Example Server Module (Core build)
--- Add your custom server-only modules here.
+-- EvoAPI Example Server Module
+-- Additional server-only modules can live here.

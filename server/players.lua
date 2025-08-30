@@ -1,24 +1,16 @@
 
-local joinTimes = {}
+-- EvoAPI player lifecycle
+local joinTimes = {} -- src -> os.time()
 
 AddEventHandler("playerConnecting", function(name, setKickReason, deferrals)
-    deferrals.defer()
     local src = source
     local identifier = EvoAPI.PrimaryIdentifier(src)
     if not identifier then
-        deferrals.done("No valid identifier found (license/steam/discord).")
+        setKickReason("No valid identifier found (license/steam/discord).")
         CancelEvent()
         return
     end
     EvoAPI.DBEnsurePlayer(identifier, name)
-    EvoAPI.DBIsBanned(identifier, function(row)
-        if row then
-            deferrals.done(("Banned: %s (by %s)"):format(row.reason or "No reason", row.banned_by or "staff"))
-            CancelEvent()
-        else
-            deferrals.done()
-        end
-    end)
 end)
 
 AddEventHandler("playerJoining", function(oldId)
@@ -29,7 +21,7 @@ AddEventHandler("playerJoining", function(oldId)
         EvoAPI.DBUpdateLastJoin(identifier)
     end
     joinTimes[src] = os.time()
-    EvoAPI.DiscordLog("Player Joined", ("**%s** joined\n`%s`"):format(name, identifier or "unknown"), 0x57F287)
+    EvoAPI.DiscordLog("Player Joined", ("**%s** joined the server\n`%s`"):format(name, identifier or "unknown"), 0x57F287)
 end)
 
 AddEventHandler("playerDropped", function(reason)
@@ -42,11 +34,13 @@ AddEventHandler("playerDropped", function(reason)
     end
     joinTimes[src] = nil
     local name = GetPlayerName(src) or ("Player "..tostring(src))
-    EvoAPI.DiscordLog("Player Left", ("**%s** left\nReason: %s"):format(name, reason or "unknown"), 0xED4245)
+    EvoAPI.DiscordLog("Player Left", ("**%s** left the server\nReason: %s"):format(name, reason or "unknown"), 0xED4245)
 end)
 
 exports("GetPlayerData", function(src, cb)
     local identifier = EvoAPI.PrimaryIdentifier(src)
     if not identifier then cb(nil); return end
-    EvoAPI.DBGetPlayerByIdentifier(identifier, function(row) cb(row) end)
+    EvoAPI.DBGetPlayerByIdentifier(identifier, function(row)
+        cb(row)
+    end)
 end)

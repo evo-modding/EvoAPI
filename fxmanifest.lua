@@ -3,24 +3,24 @@ fx_version 'cerulean'
 game 'gta5'
 lua54 'yes'
 
-author 'Devloo'
-description 'EvoAPI — Core + Admin Panel (v1.3.1)'
-version '1.3.1'
+author 'EVO Modding'
+description 'EvoAPI — FiveM Modding Framework (v1.2.1) with vMenu integration'
+version '1.2.1'
 
-ui_page 'web/index.html'
+ui_page 'nui/index.html'
 
 files {
-    'web/index.html',
-    'web/style.css',
-    'web/app.js'
+    'nui/index.html',
+    'nui/style.css',
+    'nui/script.js',
+    'permissions.vmenu.cfg'
 }
 
 client_scripts {
     'config.lua',
     'client/core.lua',
     'client/exports.lua',
-    'modules/client/*.lua',
-    'client.lua' -- admin panel client
+    'modules/client/*.lua'
 }
 
 server_scripts {
@@ -28,12 +28,11 @@ server_scripts {
     'config.lua',
     'server/core.lua',
     'server/database.lua',
-    'server/permissions.lua',
-    'server/discord.lua',
     'server/players.lua',
-    'server/moderation.lua',
+    'server/permissions.lua',
     'server/commands.lua',
+    'server/discord.lua',
+    'server/vmenu_integration.lua',
     'server/exports.lua',
-    'modules/server/*.lua',
-    'server.lua' -- admin panel server
+    'modules/server/*.lua'
 }

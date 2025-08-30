@@ -1,4 +1,5 @@
 
+-- EvoAPI Permissions Helper (exports)
 function EvoAPI.IsAdmin(src)
     local grp = EvoAPI.GetGroup(src)
     return (grp == "owner" or grp == "admin")
